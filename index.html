@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you be my Valentine?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+        body {
+            font-family: 'Indie+Flower', cursive;
+            background-color: #ffe4e6;
+        }
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+
+    <div id="question-container">
+        <img id="display-image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIyc3J3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" 
+             alt="Cute bear" class="w-48 h-48 mb-6 mx-auto bounce">
+        
+        <h1 id="main-text" class="text-3xl md:text-4xl font-bold text-pink-600 mb-8">Will you be my Valentine? 💖</h1>
+
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <button id="yes-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300">
+                Yes!
+            </button>
+            <button id="no-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all">
+                No
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const mainText = document.getElementById('main-text');
+        const displayImage = document.getElementById('display-image');
+
+        let clickCount = 0;
+        const noTexts = [
+            "Are you sure?", 
+            "Really sure??", 
+            "Think again! 🥺", 
+            "Last chance!", 
+            "Surely not?", 
+            "You might regret this!", 
+            "Give it another thought!", 
+            "Is that your final answer?", 
+            "You're breaking my heart ;(", 
+            "I'm gonna cry... 😭"
+        ];
+
+        noBtn.addEventListener('click', () => {
+            clickCount++;
+            
+            // Make Yes button bigger
+            const newSize = 1 + (clickCount * 0.5);
+            yesBtn.style.transform = `scale(${newSize})`;
+            
+            // Move No button slightly or change text
+            noBtn.innerText = noTexts[Math.min(clickCount, noTexts.length - 1)];
+            
+            // Optional: Push the No button down as Yes grows
+            const gap = 4 + (clickCount * 2);
+            document.querySelector('.flex').style.gap = `${gap}px`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('question-container').innerHTML = `
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmZicmZicmZicmZicmZicmZicmZicmZicmZicmZicmZicmZpZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/v1.Y2lkPTc5MGI3NjExOHIyc3J3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Success" class="w-64 h-64 mb-6 mx-auto">
+                <h1 class="text-4xl font-bold text-pink-600">Yay! See you on the 14th! 🌹✨</h1>
+                <p class="text-xl mt-4 text-pink-500">I knew you'd say yes!</p>
+            `;
+        });
+    </script>
+</body>
+</html>
