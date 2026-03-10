@@ -697,31 +697,29 @@ function renderQuestion() {
 function pick(idx) {
     var q    = QUESTIONS[currentQ];
     var opts = document.querySelectorAll('.option');
-    opts.forEach(function(o) { o.classList.add('disabled'); });
 
     if (idx === q.ans) {
+        opts.forEach(function(o) { o.classList.add('disabled'); });
         opts[idx].classList.add('correct');
         score++;
         document.getElementById('score-label').textContent = 'Score: ' + score;
         setTimeout(advance, 900);
     } else {
         opts[idx].classList.add('wrong');
-        opts[q.ans].classList.add('correct');
         hearts--;
         renderHearts();
 
         var card = document.getElementById('quiz-card');
         card.classList.add('shake');
-        setTimeout(function() { card.classList.remove('shake'); }, 540);
+        setTimeout(function() {
+            card.classList.remove('shake');
+            opts[idx].classList.remove('wrong');
+            if (hearts <= 0) { showScreen('screen-gameover'); }
+        }, 540);
 
         var pen = document.getElementById('penalty');
         pen.textContent = PENALTY_MSGS[Math.floor(Math.random() * PENALTY_MSGS.length)];
         pen.classList.add('show');
-
-        setTimeout(function() {
-            if (hearts <= 0) { showScreen('screen-gameover'); }
-            else { advance(); }
-        }, 1700);
     }
 }
 
