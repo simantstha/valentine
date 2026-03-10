@@ -829,6 +829,7 @@ function showHeartBreak() {
     container.classList.remove('hb-breaking');
     void container.offsetWidth; // force reflow to restart animation
     container.classList.add('hb-breaking');
+    if (navigator.vibrate) { navigator.vibrate([80, 60, 120]); }
     setTimeout(function() { container.classList.remove('hb-breaking'); }, 900);
 }
 
