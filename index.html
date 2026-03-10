@@ -2,85 +2,777 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will you be my Valentine?</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Little Quiz — Just For You 🌹</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --red: #7a0000;
+            --red-mid: #a01020;
+            --red-light: #C41E3A;
+            --gold: #D4AF37;
+            --gold-light: #F0D878;
+            --cream: #FDF6EC;
+            --dark: #110404;
+            --text-soft: #d4b0b0;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
         body {
-            font-family: 'Indie+Flower', cursive;
-            background-color: #ffe4e6;
+            font-family: 'Lato', sans-serif;
+            background: var(--dark);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 16px 12px 40px;
         }
-        .bounce {
-            animation: bounce 2s infinite;
+
+        /* ── Floating Particles ── */
+        #particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+
+        .particle {
+            position: absolute;
+            color: var(--gold);
+            opacity: 0;
+            animation: float-up linear infinite;
+            user-select: none;
+        }
+
+        @keyframes float-up {
+            0%   { transform: translateY(105vh) rotate(0deg);   opacity: 0; }
+            8%   { opacity: 0.5; }
+            88%  { opacity: 0.2; }
+            100% { transform: translateY(-10vh) rotate(400deg); opacity: 0; }
+        }
+
+        /* ── Container ── */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ── Screens ── */
+        .screen { display: none; }
+        .screen.active {
+            display: block;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Card ── */
+        .card {
+            background: linear-gradient(160deg, #1c0505 0%, #270808 55%, #1c0505 100%);
+            border: 1px solid rgba(212,175,55,0.45);
+            border-radius: 22px;
+            padding: 30px 24px 28px;
+            box-shadow:
+                0 0 0 1px rgba(212,175,55,0.07),
+                0 0 40px rgba(212,175,55,0.07),
+                0 24px 60px rgba(0,0,0,0.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent);
+        }
+
+        /* corner roses */
+        .card-rose {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .card-rose.tl { top: 12px;  left: 14px;  transform: rotate(-30deg); }
+        .card-rose.tr { top: 12px;  right: 14px; transform: rotate(30deg); }
+        .card-rose.bl { bottom: 12px; left: 14px;  transform: rotate(30deg); }
+        .card-rose.br { bottom: 12px; right: 14px; transform: rotate(-30deg); }
+
+        /* ── START SCREEN ── */
+        .main-icon {
+            font-size: 58px;
+            text-align: center;
+            display: block;
+            margin-bottom: 14px;
+            animation: heartbeat 2.2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%,100% { transform: scale(1); }
+            14%      { transform: scale(1.12); }
+            28%      { transform: scale(1); }
+            42%      { transform: scale(1.06); }
+            56%      { transform: scale(1); }
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.9rem;
+            text-align: center;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-soft);
+            text-align: center;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.35), transparent);
+            margin: 18px 0;
+        }
+
+        /* ── Hearts Bar ── */
+        .hearts-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .heart-icon {
+            font-size: 26px;
+            transition: all 0.35s ease;
+        }
+
+        .heart-icon.lost {
+            filter: grayscale(1) brightness(0.4);
+            transform: scale(0.85);
+        }
+
+        /* ── Button ── */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px 24px;
+            background: linear-gradient(135deg, var(--red) 0%, var(--red-light) 100%);
+            border: 1px solid rgba(212,175,55,0.6);
+            color: var(--gold-light);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.28s ease;
+            text-align: center;
+            letter-spacing: 0.4px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover, .btn:focus {
+            background: linear-gradient(135deg, var(--red-mid), #d42040);
+            box-shadow: 0 0 24px rgba(212,175,55,0.22);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        .btn:active { transform: translateY(0); }
+
+        /* ── QUIZ SCREEN ── */
+        .progress-wrap { margin-bottom: 18px; }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(212,175,55,0.75);
+            font-size: 0.78rem;
+            margin-bottom: 7px;
+            letter-spacing: 0.3px;
+        }
+
+        .progress-track {
+            height: 3px;
+            background: rgba(212,175,55,0.15);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .q-label {
+            color: rgba(212,175,55,0.6);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            margin-bottom: 7px;
+        }
+
+        .q-text {
+            font-family: 'Playfair Display', serif;
+            color: var(--cream);
+            font-size: 1.15rem;
+            line-height: 1.55;
+            margin-bottom: 22px;
+        }
+
+        /* ── Options ── */
+        .options { display: grid; gap: 11px; }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 15px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+            color: #e0c8c8;
+            font-size: 0.92rem;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .option:hover   { background: rgba(212,175,55,0.09); border-color: rgba(212,175,55,0.5); transform: translateX(3px); }
+        .option:active  { transform: translateX(1px); }
+
+        .opt-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            color: var(--gold);
+            flex-shrink: 0;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .option.correct              { background: rgba(40,160,60,0.14); border-color: #4CAF50; color: #b6eab6; }
+        .option.correct .opt-letter  { background: rgba(40,160,60,0.25); border-color: #4CAF50; color: #4CAF50; }
+        .option.wrong                { background: rgba(180,20,30,0.18); border-color: #c0293a;  color: #e8a8a8; }
+        .option.wrong .opt-letter    { background: rgba(180,20,30,0.28); border-color: #c0293a;  color: #e06070; }
+        .option.disabled             { pointer-events: none; }
+
+        /* ── Shake ── */
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            15%     { transform: translateX(-9px); }
+            30%     { transform: translateX(9px); }
+            45%     { transform: translateX(-6px); }
+            60%     { transform: translateX(6px); }
+            75%     { transform: translateX(-3px); }
+            90%     { transform: translateX(3px); }
+        }
+
+        .shake { animation: shake 0.52s ease; }
+
+        /* ── Penalty msg ── */
+        .penalty {
+            text-align: center;
+            color: #e0a0a0;
+            font-size: 0.87rem;
+            font-style: italic;
+            margin-top: 13px;
+            min-height: 22px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .penalty.show { opacity: 1; }
+
+        /* ── GAME OVER ── */
+        .go-icon  { font-size: 58px; text-align: center; display: block; margin-bottom: 12px; }
+        .go-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.7rem; text-align: center; margin-bottom: 8px; }
+        .go-sub   { color: var(--text-soft); text-align: center; font-size: 0.93rem; line-height: 1.6; margin-bottom: 26px; }
+
+        /* ── RESULT / LETTER ── */
+        .letter-header { text-align: center; margin-bottom: 22px; }
+
+        .letter-rose-icon {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 10px;
+            animation: heartbeat 2.2s ease-in-out infinite;
+        }
+
+        .letter-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 1.5rem;
+            font-style: italic;
+        }
+
+        .final-score {
+            text-align: center;
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .letter-scroll {
+            max-height: 58vh;
+            overflow-y: auto;
+            padding-right: 6px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .letter-scroll::-webkit-scrollbar       { width: 3px; }
+        .letter-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 2px; }
+        .letter-scroll::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.35); border-radius: 2px; }
+
+        .letter-body {
+            color: #e0cece;
+            font-size: 0.96rem;
+            line-height: 1.9;
+        }
+
+        .letter-body p { margin-bottom: 16px; }
+
+        .letter-body .hl {
+            color: var(--gold-light);
+            font-style: italic;
+        }
+
+        .letter-sig {
+            margin-top: 22px;
+            text-align: right;
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        /* ── Confetti ── */
+        .confetti-piece {
+            position: fixed;
+            width: 7px;
+            height: 7px;
+            top: -12px;
+            border-radius: 2px;
+            pointer-events: none;
+            animation: cf-fall linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes cf-fall {
+            0%   { transform: translateY(0)     rotate(0deg);   opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 380px) {
+            .card   { padding: 22px 16px 22px; }
+            .title  { font-size: 1.6rem; }
+            .q-text { font-size: 1.05rem; }
+            .option { font-size: 0.88rem; padding: 12px 12px; }
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+<body>
 
-    <div id="question-container">
-        <img id="display-image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHIyc3J3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZzZicWp3ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" 
-             alt="Cute bear" class="w-48 h-48 mb-6 mx-auto bounce">
-        
-        <h1 id="main-text" class="text-3xl md:text-4xl font-bold text-pink-600 mb-8">Will you be my Valentine? 💖</h1>
+<div id="particles"></div>
 
-        <div class="flex flex-wrap items-center justify-center gap-4">
-            <button id="yes-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300">
-                Yes!
-            </button>
-            <button id="no-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all">
-                No
-            </button>
+<div class="container">
+
+    <!-- ══ START ══ -->
+    <div class="screen active" id="screen-start">
+        <div class="card">
+            <span class="card-rose tl">🌹</span>
+            <span class="card-rose tr">🌹</span>
+            <span class="card-rose bl">🌹</span>
+            <span class="card-rose br">🌹</span>
+            <span class="main-icon">🌹</span>
+            <h1 class="title">A Little Quiz<br><em>Just For You</em></h1>
+            <p class="subtitle">
+                Nine questions about us — our story, our little world.<br>
+                Answer them, and something waits for you at the end. 💌
+            </p>
+            <div class="divider"></div>
+            <div class="hearts-row">
+                <span class="heart-icon">❤️</span>
+                <span class="heart-icon">❤️</span>
+                <span class="heart-icon">❤️</span>
+            </div>
+            <p class="subtitle" style="margin-bottom: 24px; font-size: 0.83rem;">
+                You have 3 hearts. Don't lose them all!
+            </p>
+            <button class="btn" onclick="startQuiz()">Begin Our Story →</button>
         </div>
     </div>
 
-    <script>
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const mainText = document.getElementById('main-text');
-        const displayImage = document.getElementById('display-image');
+    <!-- ══ QUIZ ══ -->
+    <div class="screen" id="screen-quiz">
+        <div class="card" id="quiz-card">
+            <span class="card-rose tl">🌹</span>
+            <span class="card-rose tr">🌹</span>
+            <div class="hearts-row" id="hearts-row"></div>
+            <div class="progress-wrap">
+                <div class="progress-meta">
+                    <span id="prog-label">Question 1 of 9</span>
+                    <span id="score-label">Score: 0</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="q-label" id="q-label">Question 1</div>
+            <div class="q-text"  id="q-text"></div>
+            <div class="options" id="options"></div>
+            <div class="penalty" id="penalty"></div>
+        </div>
+    </div>
 
-        let clickCount = 0;
-        const noTexts = [
-            "Are you sure?", 
-            "Really sure??", 
-            "Think again! 🥺", 
-            "Last chance!", 
-            "Surely not?", 
-            "You might regret this!", 
-            "Give it another thought!", 
-            "Is that your final answer?", 
-            "You're breaking my heart ;(", 
-            "I'm gonna cry... 😭"
-        ];
+    <!-- ══ GAME OVER ══ -->
+    <div class="screen" id="screen-gameover">
+        <div class="card">
+            <span class="card-rose tl">🌹</span>
+            <span class="card-rose tr">🌹</span>
+            <span class="go-icon">💔</span>
+            <h2 class="go-title">Oh no…</h2>
+            <p class="go-sub">
+                You ran out of hearts — but I know you know our story.<br>
+                Want to try again? 🥺
+            </p>
+            <button class="btn" onclick="restartQuiz()">Try Again ↺</button>
+        </div>
+    </div>
 
-        noBtn.addEventListener('click', () => {
-            clickCount++;
-            
-            // Make Yes button bigger
-            const newSize = 1 + (clickCount * 0.5);
-            yesBtn.style.transform = `scale(${newSize})`;
-            
-            // Move No button slightly or change text
-            noBtn.innerText = noTexts[Math.min(clickCount, noTexts.length - 1)];
-            
-            // Optional: Push the No button down as Yes grows
-            const gap = 4 + (clickCount * 2);
-            document.querySelector('.flex').style.gap = `${gap}px`;
-        });
+    <!-- ══ RESULT + LETTER ══ -->
+    <div class="screen" id="screen-result">
+        <div class="card">
+            <span class="card-rose tl">🌹</span>
+            <span class="card-rose tr">🌹</span>
+            <span class="card-rose bl">🌹</span>
+            <span class="card-rose br">🌹</span>
 
-        yesBtn.addEventListener('click', () => {
-            document.getElementById('question-container').innerHTML = `
-                <img src="IMG_9892.jpg" alt="Success" class="w-64 h-64 mb-6 mx-auto">
-                <h1 class="text-4xl font-bold text-pink-600">Yay! See you on the 14th! 🌹✨</h1>
-                <p class="text-xl mt-4 text-pink-500">I knew you'd say yes!</p>
-            `;
-        });
-    </script>
+            <div class="letter-header">
+                <span class="letter-rose-icon">💌</span>
+                <div class="letter-title">A Letter For You</div>
+            </div>
+
+            <p class="final-score" id="final-score"></p>
+
+            <div class="divider"></div>
+
+            <div class="letter-scroll">
+                <div class="letter-body">
+                    <p>My dearest,</p>
+
+                    <p>
+                        Some things in life arrive quietly — a notification, a match,
+                        a conversation that starts small and slowly becomes
+                        <span class="hl">everything</span>.
+                        That was us. We found each other on Hinge, but I like to think
+                        the universe had already decided it long before we did.
+                    </p>
+
+                    <p>
+                        I still think about the day we first went to
+                        <span class="hl">Mall of America</span> — the way you walked
+                        beside me, the way everything felt easy and unhurried, the way
+                        I quietly thought to myself:
+                        <em>this is someone I want to keep around.</em>
+                        There was no grand moment, no dramatic scene.
+                        Just us, together, and it already felt like home.
+                    </p>
+
+                    <p>
+                        What I admire most about you is something you probably don't
+                        even think about — your <span class="hl">caring heart</span>.
+                        There was a time you weren't well, tired and hurting, and yet —
+                        you were asking if I had eaten. You were telling me to rest.
+                        In that moment I saw all of you: the quiet strength you carry,
+                        the love you give without even realising it, the way you pour
+                        into others even when you yourself need to be poured into.
+                        That kind of love is rare. <em>You</em> are rare.
+                    </p>
+
+                    <p>
+                        You are my best friend, my confidant, my calm.
+                        You are the person I want to tell things to — the funny things,
+                        the hard things, the things I haven't found words for yet.
+                        You are my favourite part of ordinary days.
+                    </p>
+
+                    <p>
+                        Like <span class="hl">spring</span> — your favourite season —
+                        you bring warmth after cold, colour after grey, and something
+                        that feels like a beginning every single time I'm with you.
+                        Even the ordinary light looks different when you're in it.
+                    </p>
+
+                    <p>
+                        You mean the world to me. Not the version of that phrase people
+                        say easily — I mean it the way where the world is quieter without
+                        you in it, where I notice your absence in the smallest moments,
+                        where choosing you feels less like a decision and more like
+                        breathing.
+                    </p>
+
+                    <p>
+                        Thank you for being you.
+                        <em>Every soft, caring, quietly beautiful part of you.</em>
+                    </p>
+                </div>
+
+                <div class="letter-sig">
+                    Forever yours, 🌹<br>Simant
+                </div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <button class="btn" onclick="restartQuiz()">Play Again ↺</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /container -->
+
+<script>
+const QUESTIONS = [
+    {
+        q: "Where did we go first after seeing each other?",
+        opts: ["Mall of America", "Grabbed a coffee", "The lake", "A restaurant"],
+        ans: 0
+    },
+    {
+        q: "What did we eat on our very first day together?",
+        opts: ["Pizza", "Chinese food", "Ramen", "Cheesecake"],
+        ans: 2
+    },
+    {
+        q: "What is my favorite thing to do?",
+        opts: ["Workout", "Run", "Code", "Watch videos"],
+        ans: 0
+    },
+    {
+        q: "What quality of yours do I admire the most?",
+        opts: ["Her humor", "Her caring nature", "Her confidence", "Her intelligence"],
+        ans: 1
+    },
+    {
+        q: "How did we first connect with each other?",
+        opts: ["Instagram", "Tinder", "Hinge", "Through friends"],
+        ans: 2
+    },
+    {
+        q: "What is your favorite season?",
+        opts: ["Summer", "Fall", "Winter", "Spring"],
+        ans: 3
+    },
+    {
+        q: "What is my favorite food?",
+        opts: ["Italian", "Japanese", "Indian", "Chinese"],
+        ans: 3
+    },
+    {
+        q: "What is my favorite sport to watch?",
+        opts: ["Football", "Basketball", "Soccer", "Cricket"],
+        ans: 3
+    },
+    {
+        q: "What is the name of my company?",
+        opts: ["Google", "Amazon", "Mitchell", "Deloitte"],
+        ans: 2
+    }
+];
+
+const PENALTY_MSGS = [
+    "Hmm, not quite… 🥺 You lost a heart!",
+    "That wasn't it, love… 💔 One heart gone!",
+    "Oh no! Try to remember… ❤️‍🩹",
+    "So close, but not quite! 💔 Minus one heart.",
+    "Are you sure about that? 😅 One heart lost!"
+];
+
+const LETTERS = ['A','B','C','D'];
+const CF_COLORS = ['#D4AF37','#C41E3A','#F0D060','#ffffff','#ffaaaa','#ffddaa'];
+
+let currentQ = 0, score = 0, hearts = 3;
+
+/* ── Particles ── */
+(function spawnParticles() {
+    const wrap = document.getElementById('particles');
+    const symbols = ['✦','✧','♥','·','✿','❀','⁕'];
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = symbols[i % symbols.length];
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.fontSize = (10 + Math.random() * 9) + 'px';
+        p.style.animationDuration = (9 + Math.random() * 13) + 's';
+        p.style.animationDelay = (Math.random() * 12) + 's';
+        wrap.appendChild(p);
+    }
+})();
+
+/* ── Screen helpers ── */
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Hearts ── */
+function renderHearts() {
+    var row = document.getElementById('hearts-row');
+    row.innerHTML = '';
+    for (var i = 0; i < 3; i++) {
+        var span = document.createElement('span');
+        span.className = 'heart-icon' + (i >= hearts ? ' lost' : '');
+        span.textContent = '❤️';
+        row.appendChild(span);
+    }
+}
+
+/* ── Render question ── */
+function renderQuestion() {
+    var q     = QUESTIONS[currentQ];
+    var total = QUESTIONS.length;
+
+    document.getElementById('q-label').textContent     = 'Question ' + (currentQ + 1);
+    document.getElementById('prog-label').textContent  = 'Question ' + (currentQ + 1) + ' of ' + total;
+    document.getElementById('score-label').textContent = 'Score: ' + score;
+    document.getElementById('q-text').textContent      = q.q;
+    document.getElementById('progress-fill').style.width = ((currentQ / total) * 100) + '%';
+
+    var pen = document.getElementById('penalty');
+    pen.textContent = '';
+    pen.classList.remove('show');
+
+    var wrap = document.getElementById('options');
+    wrap.innerHTML = '';
+    q.opts.forEach(function(text, i) {
+        var div = document.createElement('div');
+        div.className = 'option';
+        div.innerHTML = '<span class="opt-letter">' + LETTERS[i] + '</span><span>' + text + '</span>';
+        div.addEventListener('click', function() { pick(i); });
+        wrap.appendChild(div);
+    });
+
+    renderHearts();
+}
+
+/* ── Pick answer ── */
+function pick(idx) {
+    var q    = QUESTIONS[currentQ];
+    var opts = document.querySelectorAll('.option');
+    opts.forEach(function(o) { o.classList.add('disabled'); });
+
+    if (idx === q.ans) {
+        opts[idx].classList.add('correct');
+        score++;
+        document.getElementById('score-label').textContent = 'Score: ' + score;
+        setTimeout(advance, 900);
+    } else {
+        opts[idx].classList.add('wrong');
+        opts[q.ans].classList.add('correct');
+        hearts--;
+        renderHearts();
+
+        var card = document.getElementById('quiz-card');
+        card.classList.add('shake');
+        setTimeout(function() { card.classList.remove('shake'); }, 540);
+
+        var pen = document.getElementById('penalty');
+        pen.textContent = PENALTY_MSGS[Math.floor(Math.random() * PENALTY_MSGS.length)];
+        pen.classList.add('show');
+
+        setTimeout(function() {
+            if (hearts <= 0) { showScreen('screen-gameover'); }
+            else { advance(); }
+        }, 1700);
+    }
+}
+
+/* ── Advance ── */
+function advance() {
+    currentQ++;
+    if (currentQ >= QUESTIONS.length) { finish(); }
+    else { renderQuestion(); }
+}
+
+/* ── Finish ── */
+function finish() {
+    document.getElementById('progress-fill').style.width = '100%';
+    var pct = Math.round((score / QUESTIONS.length) * 100);
+    document.getElementById('final-score').textContent =
+        'You got ' + score + ' out of ' + QUESTIONS.length + ' — ' + pct + '% of our story, right in your heart.';
+    showScreen('screen-result');
+    launchConfetti();
+}
+
+/* ── Confetti ── */
+function launchConfetti() {
+    for (var i = 0; i < 70; i++) {
+        (function(delay) {
+            setTimeout(function() {
+                var c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.left = (Math.random() * 100) + 'vw';
+                c.style.background = CF_COLORS[Math.floor(Math.random() * CF_COLORS.length)];
+                c.style.animationDuration = (2.2 + Math.random() * 2.8) + 's';
+                c.style.animationDelay = (Math.random() * 0.6) + 's';
+                c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                c.style.width  = (6 + Math.random() * 5) + 'px';
+                c.style.height = (6 + Math.random() * 5) + 'px';
+                document.body.appendChild(c);
+                setTimeout(function() { c.remove(); }, 5000);
+            }, delay);
+        })(i * 35);
+    }
+}
+
+/* ── Start / Restart ── */
+function startQuiz() {
+    currentQ = 0;
+    score    = 0;
+    hearts   = 3;
+    renderQuestion();
+    showScreen('screen-quiz');
+}
+
+function restartQuiz() { startQuiz(); }
+</script>
 </body>
 </html>
