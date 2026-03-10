@@ -399,6 +399,60 @@
             100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
         }
 
+        /* ── Heart Break Overlay ── */
+        #heart-break-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hb-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+        }
+
+        .hb-half {
+            position: absolute;
+            font-size: 100px;
+            line-height: 1;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+
+        .hb-left  { clip-path: inset(0 50% 0 0); }
+        .hb-right { clip-path: inset(0 0 0 50%); }
+
+        .hb-breaking .hb-left {
+            animation: hb-appear 0.18s ease-out forwards,
+                       hb-fly-left 0.65s 0.18s ease-in forwards;
+        }
+
+        .hb-breaking .hb-right {
+            animation: hb-appear 0.18s ease-out forwards,
+                       hb-fly-right 0.65s 0.18s ease-in forwards;
+        }
+
+        @keyframes hb-appear {
+            from { transform: scale(0.2); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+
+        @keyframes hb-fly-left {
+            from { transform: scale(1) translate(0, 0)    rotate(0deg);   opacity: 1; }
+            to   { transform: scale(0.7) translate(-70px, 55px) rotate(-35deg); opacity: 0; }
+        }
+
+        @keyframes hb-fly-right {
+            from { transform: scale(1) translate(0, 0)    rotate(0deg);  opacity: 1; }
+            to   { transform: scale(0.7) translate(70px, 55px) rotate(35deg); opacity: 0; }
+        }
+
         /* ── Responsive ── */
         @media (max-width: 380px) {
             .card   { padding: 22px 16px 22px; }
@@ -411,6 +465,13 @@
 <body>
 
 <div id="particles"></div>
+
+<div id="heart-break-overlay">
+    <div class="hb-container">
+        <span class="hb-half hb-left">❤️</span>
+        <span class="hb-half hb-right">❤️</span>
+    </div>
+</div>
 
 <div class="container">
 
@@ -708,6 +769,7 @@ function pick(idx) {
         opts[idx].classList.add('wrong');
         hearts--;
         renderHearts();
+        showHeartBreak();
 
         var card = document.getElementById('quiz-card');
         card.classList.add('shake');
@@ -759,6 +821,15 @@ function launchConfetti() {
             }, delay);
         })(i * 35);
     }
+}
+
+/* ── Heart Break ── */
+function showHeartBreak() {
+    var container = document.querySelector('.hb-container');
+    container.classList.remove('hb-breaking');
+    void container.offsetWidth; // force reflow to restart animation
+    container.classList.add('hb-breaking');
+    setTimeout(function() { container.classList.remove('hb-breaking'); }, 900);
 }
 
 /* ── Start / Restart ── */
